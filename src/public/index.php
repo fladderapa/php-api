@@ -50,6 +50,19 @@ $app->get('/add-entry', function ($request, $response, $args) {
     return $this->view->render($response, 'add-entry.php');
 });
 
+$app->get('/add-comment/{id}', function ($request, $response, $args) {
+    /**
+     * This fetches the 'index.php'-file inside the 'views'-folder
+     */
+    return $this->view->render($response, 'add-comment.php');
+});
+
+$app->get('/update-entry/{id}', function ($request, $response, $args) {
+    /**
+     * This fetches the 'index.php'-file inside the 'views'-folder
+     */
+    return $this->view->render($response, 'update-entry.php');
+});
 
 /**
  * I added basic inline login functionality. This could be extracted to a
@@ -94,8 +107,17 @@ $app->group('/api', function () use ($app) {
   // GET http://localhost:XXXX/api/entries
   //List all entries
   $app->get('/entries', function ($request, $response, $args) {
-      $allTodos = $this->todos->getAllEntries();
-      return $response->withJson(['data' => $allTodos]);
+    //   url: api/entries?amount=X
+    if (isset($_GET['amount'])) {
+        $amount = ($_GET['amount']);
+        $amountTodos = $this->todos->getAmountEntries($amount);
+        return $response->withJson(['data' => $amountTodos]);
+    }
+    else{
+        $allTodos = $this->todos->getAllEntries();
+        return $response->withJson(['data' => $allTodos]);
+    }
+
   });
 
   // GET http://localhost:XXXX/api/todos
@@ -108,16 +130,38 @@ $app->group('/api', function () use ($app) {
   // GET http://localhost:XXXX/api/users
   // List all users
   $app->get('/users', function ($request, $response, $args) {
-      $allTodos = $this->todos->getAllUsers();
-      return $response->withJson(['data' => $allTodos]);
+    if (isset($_GET['amount'])) {
+        $amount = ($_GET['amount']);
+        $amountUsers = $this->todos->getAmountUsers($amount);
+        return $response->withJson(['data' => $amountUsers]);
+    }
+    else{
+        $allTodos = $this->todos->getAllUsers();
+        return $response->withJson(['data' => $allTodos]);
+    }
   });
 
   // GET http://localhost:XXXX/api/users
-  // List all users
+  // List all comments
   $app->get('/comments', function ($request, $response, $args) {
-      $allTodos = $this->todos->getAllComments();
-      return $response->withJson(['data' => $allTodos]);
+    if (isset($_GET['amount'])) {
+        $amount = ($_GET['amount']);
+        $amountComments = $this->todos->getAmountComments($amount);
+        return $response->withJson(['data' => $amountComments]);
+    }
+    else{
+        $allTodos = $this->todos->getAllComments();
+        return $response->withJson(['data' => $allTodos]);       
+    }
   });
+
+$app->get('/comments/{id}', function ($request, $response, $args) {
+    $id = $args['id'];
+    $singleComment = $this->todos->getOneComment($id);
+    return $response->withJson(['data' => $singleComment]);
+});
+
+
 
   // GET http://localhost:XXXX/api/[table]/id
   $app->get('/{table}/{id}', function ($request, $response, $args) {
@@ -148,8 +192,45 @@ $app->group('/api', function () use ($app) {
       return $response->withJson(['data' => $newTodo]);
   });
 
+  // POST http://localhost:XXXX/api/todos
+  // Post an entry POST /api/comments
+  $app->post('/addComment', function ($request, $response, $args) {
+    $body = $request->getParsedBody();
+    $newTodo = $this->todos->addComment($body);
+    return $response->withJson(['data' => $newTodo]);
+});
 
+//Update Entry
+$app->patch('/entries', function ($request, $response, $args){
+    $body = $request->getParsedBody();
+    $entryUpdate = $this->todos->updateEntry($body);
+    return $response->withJson(['data' => $entryUpdate]);
+});
 
+$app->delete('/entries/{id}', function ($request, $response, $args) {
+    $id = $args['id'];
+
+    $singleEntry = $this->todos->deleteOneEntry($id);
+    return $response->withJson(['data' => $singleEntry]);
+});
+
+$app->delete('/comments/{id}', function ($request, $response, $args) {
+    $id = $args['id'];
+    $singleComment = $this->todos->deleteOneComment($id);
+    return $response->withJson(['data' => $singleComment]);
+});
+
+$app->get('/user/entries/{id}', function ($request, $response, $args) {
+    $id = $args['id'];
+    $allEntriesByUser = $this->todos->getAllEntriesByUser($id);
+   return $response->withJson(['data' => $allEntriesByUser]);
+});
+
+$app->get('/entry/comments/{id}', function ($request, $response, $args) {
+    $id = $args['id'];
+    $allCommentsByEntry = $this->todos->getAllCommentsByEntry($id);
+   return $response->withJson(['data' => $allCommentsByEntry]);
+});
 
 });
 

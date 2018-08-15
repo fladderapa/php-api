@@ -4,7 +4,8 @@
       <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
         <a href="#" class="material-icons mdc-toolbar__menu-icon menu">menu</a>
         <span class="mdc-toolbar__title">API - Entries</span>
-        <input class="search-input" placeholder="Search" type="text" name="search">
+        <input id="searchValue" class="search-input" placeholder="Search" type="text" name="search">
+        <button onclick="search()">Search</button>
       </section>
     </div>
 <!-- Drawer -->

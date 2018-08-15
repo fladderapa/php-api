@@ -42,11 +42,6 @@
 
   </main>
 </body>
-<script src="scripts/jquery-latest.js"></script>
-<script src="scripts/jquery.tablesorter.js"></script>
-<script src="scripts/jquery.tablesorter.pager.js"></script>
-<script src="scripts/main.js"></script>
-<script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js" defer></script>
 
 <footer class="footer-wrapper">
 </footer>
