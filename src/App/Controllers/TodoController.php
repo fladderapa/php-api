@@ -19,35 +19,35 @@ class TodoController
     {
         $this->db = $pdo;
     }
-
+    //Get 20 entries
     public function getAllEntries()
     {
         $getAll = $this->db->prepare('SELECT entries.entryID, entries.title, entries.content, users.username, entries.createdAt FROM entries INNER JOIN users ON entries.createdBy = users.userID LIMIT 20');
         $getAll->execute();
         return $getAll->fetchAll();
     }
-
+    //Get an amount of entrys
     public function getAmountEntries($amount)
     {
         $getAmount = $this->db->prepare("SELECT * FROM (SELECT entries.entryID, entries.title, entries.content, users.username, entries.createdAt FROM entries INNER JOIN users ON entries.createdBy = users.userID ORDER BY entryID DESC LIMIT $amount) as r ORDER BY entryID");
         $getAmount->execute();
         return $getAmount->fetchAll();
     }
-
+    //Get 20 comments
     public function getAllComments()
     {
         $getAll = $this->db->prepare('SELECT * FROM comments LIMIT 20');
         $getAll->execute();
         return $getAll->fetchAll();
     }
-
+    //Get an amount of comments
     public function getAmountComments($amount)
     {
         $getAmount = $this->db->prepare("SELECT * FROM comments LIMIT $amount");
         $getAmount->execute();
         return $getAmount->fetchAll();
     }
-
+    //Get entries by user
     public function getAllEntriesByUser( $id)
     {   
         $getUserPosts = $this->db->prepare('SELECT * FROM entries WHERE createdBy=:id');
@@ -55,7 +55,7 @@ class TodoController
         $userPosts = $getUserPosts->fetchAll();
         return $userPosts;
     }
-
+    //Get comments by entry
     public function getAllCommentsByEntry( $id)
     {   
         $getCommentsByEntry = $this->db->prepare('SELECT * FROM comments WHERE entryID=:id');
@@ -63,7 +63,7 @@ class TodoController
         $CommentsByEntry= $getCommentsByEntry->fetchAll();
         return $CommentsByEntry;
     }
-
+    //Get one comment with id
     public function getOneComment($id)
     {
         $getOneComment = $this->db->prepare('SELECT * FROM comments WHERE commentID = :id');
@@ -71,20 +71,22 @@ class TodoController
         return $getOneComment->fetch();
     }
 
-    public function getLast20Entries()
-    {
-        $getAll = $this->db->prepare('SELECT * FROM (SELECT entries.entryID, entries.title, entries.content, users.username, entries.createdAt FROM entries INNER JOIN users ON entries.createdBy = users.userID ORDER BY entryID DESC LIMIT 20) as r ORDER BY entryID');
-        $getAll->execute();
-        return $getAll->fetchAll();
-    }
+    // IF YOU WANT TO ADD ABILITY TO GET 20 LAST COMMENTS AS WELL AS ALL COMMENTS LATER ON
+    // public function getLast20Entries()
+    // {
+    //     $getAll = $this->db->prepare('SELECT * FROM (SELECT entries.entryID, entries.title, entries.content, users.username, entries.createdAt FROM entries INNER JOIN users ON entries.createdBy = users.userID ORDER BY entryID DESC LIMIT 20) as r ORDER BY entryID');
+    //     $getAll->execute();
+    //     return $getAll->fetchAll();
+    // }
 
+    //Get all users
     public function getAllUsers()
     {
         $getAll = $this->db->prepare('SELECT `userID`,`username`,`createdAt` FROM `users`');
         $getAll->execute();
         return $getAll->fetchAll();
     }
-
+    //Get an amount of users
     public function getAmountUsers($amount)
     {
         $getAmount = $this->db->prepare("SELECT `userID`,`username`,`createdAt` FROM `users` LIMIT $amount");
@@ -107,11 +109,6 @@ class TodoController
         ]);
         return $getOne->fetch();
     }
-
-
-    /****************************************/
-    /* Post */
-    /****************************************/
 
     // Add a user
     public function addUser($todo)
@@ -179,28 +176,29 @@ class TodoController
         ];
     }
 
+    //Delete one entry by id
     public function deleteOneEntry($id)
     {
         $deleteOne = $this->db->prepare('DELETE FROM entries WHERE entryID = :id');
         $deleteOne->execute([':id' => $id]);
     }
 
+    //Delete one comment by id
     public function deleteOneComment($id)
     {
         $deleteOneComment = $this->db->prepare('DELETE FROM comments WHERE commentID = :id');
         $deleteOneComment->execute([':id' => $id]);
     }
 
+    //Update on entry
     public function updateEntry($entry)
     {
-        // UPDATE `entries` SET `title` = 'Uppdaterad', `content` = 'Via webbläsaren' WHERE `entries`.`entryID` = 16;
       $updateOne = $this->db->prepare('UPDATE entries SET title = :title, content = :content WHERE entryID = :entryID');
       $updateOne->execute([
         ':title' => $entry['title'], 
         ':content'   => $entry['content'],
         ':entryID' => $entry['entryID']
       ]);
-    //   $updateOne->execute([ ':title' => $body['title'], ':content' => $body['content'], ':entryID' => $id]);
     }
 
 }

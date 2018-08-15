@@ -8,11 +8,10 @@
     <section class="section-wrapper">
       <h1>Add a Comment</h1>
       <div class="form-group">
-        <textarea name="post" id="contentComment" rows="8" cols="120" placeholder="Your post should not be more tha 10000 characters! Remember!"></textarea>
-        <br/>
+      <div class="mdc-text-field mdc-text-field--textarea" style="margin-top: 25px;">
+        <textarea class="mdc-text-field__input" name="post" id="contentComment" rows="8" cols="120" placeholder="Your post should not be more tha 10000 characters! Remember!"></textarea>
+        </div>
         <button onclick="addComment()" class="btn btn-primary" value="Post">Post </button>
-
-
       </div>
     </section>
   </main>

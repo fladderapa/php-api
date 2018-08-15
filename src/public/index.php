@@ -141,25 +141,30 @@ $app->group('/api', function () use ($app) {
     }
   });
 
-  // GET http://localhost:XXXX/api/users
-  // List all comments
+
   $app->get('/comments', function ($request, $response, $args) {
+    // GET http://localhost:XXXX/api/comments?amount=X
+    // List amount of comments
     if (isset($_GET['amount'])) {
         $amount = ($_GET['amount']);
         $amountComments = $this->todos->getAmountComments($amount);
         return $response->withJson(['data' => $amountComments]);
     }
+     // List all comments
+     // GET http://localhost:XXXX/api/comments
     else{
         $allTodos = $this->todos->getAllComments();
         return $response->withJson(['data' => $allTodos]);       
     }
   });
 
-$app->get('/comments/{id}', function ($request, $response, $args) {
-    $id = $args['id'];
-    $singleComment = $this->todos->getOneComment($id);
-    return $response->withJson(['data' => $singleComment]);
-});
+  // GET http://localhost:XXXX/api/comments/id
+  //Get one comment with id
+    $app->get('/comments/{id}', function ($request, $response, $args) {
+        $id = $args['id'];
+        $singleComment = $this->todos->getOneComment($id);
+        return $response->withJson(['data' => $singleComment]);
+    });
 
 
 
@@ -176,56 +181,56 @@ $app->get('/comments/{id}', function ($request, $response, $args) {
   /* Post */
   /****************************************/
 
-  // POST http://localhost:XXXX/api/todos
-  // Post an entry POST /api/addUser
+  // POST a user to /api/addUser
   $app->post('/addUser', function ($request, $response, $args) {
       $body = $request->getParsedBody();
       $newTodo = $this->todos->addUser($body);
       return $response->withJson(['data' => $newTodo]);
   });
 
-  // POST http://localhost:XXXX/api/todos
-  // Post an entry POST /api/entries
+  // POST a entry to /api/entries
   $app->post('/addEntry', function ($request, $response, $args) {
       $body = $request->getParsedBody();
       $newTodo = $this->todos->addEntry($body);
       return $response->withJson(['data' => $newTodo]);
   });
 
-  // POST http://localhost:XXXX/api/todos
-  // Post an entry POST /api/comments
+  // POST a comment to /api/addComment
   $app->post('/addComment', function ($request, $response, $args) {
     $body = $request->getParsedBody();
     $newTodo = $this->todos->addComment($body);
     return $response->withJson(['data' => $newTodo]);
 });
 
-//Update Entry
+//UPDATE entry to /api/entries
 $app->patch('/entries', function ($request, $response, $args){
     $body = $request->getParsedBody();
     $entryUpdate = $this->todos->updateEntry($body);
     return $response->withJson(['data' => $entryUpdate]);
 });
 
+//DELETE entry to /api/entries/id
 $app->delete('/entries/{id}', function ($request, $response, $args) {
     $id = $args['id'];
-
     $singleEntry = $this->todos->deleteOneEntry($id);
     return $response->withJson(['data' => $singleEntry]);
 });
 
+//DELETE comments to /api/comments/id
 $app->delete('/comments/{id}', function ($request, $response, $args) {
     $id = $args['id'];
     $singleComment = $this->todos->deleteOneComment($id);
     return $response->withJson(['data' => $singleComment]);
 });
 
+//GET entries by user  /api/user/entries/id
 $app->get('/user/entries/{id}', function ($request, $response, $args) {
     $id = $args['id'];
     $allEntriesByUser = $this->todos->getAllEntriesByUser($id);
    return $response->withJson(['data' => $allEntriesByUser]);
 });
 
+//GET comment by entry  /api/entry/comments/id
 $app->get('/entry/comments/{id}', function ($request, $response, $args) {
     $id = $args['id'];
     $allCommentsByEntry = $this->todos->getAllCommentsByEntry($id);

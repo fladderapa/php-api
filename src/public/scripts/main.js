@@ -4,8 +4,9 @@ $(document).ready(function() {
   var deletingObject;
   // Global variabes
   var col = [];
-  var routes = ["/api/entries",
-  "/api/getLast20Entries",
+  var routes = [
+    "/api/entries",
+  // "/api/getLast20Entries",
   "/api/users",
   "/api/comments"
   ];
@@ -28,7 +29,6 @@ $(document).ready(function() {
       then((response) => response.json()).
       then(function(entries) {
         createTable(entries, rout);
-        //debugger;
       });
 
     });
@@ -54,7 +54,7 @@ $(document).ready(function() {
     var h1 = document.createElement("h1");
     var text;
     if (rout == "/api/entries"){
-      text = "All Entries";
+      text = "Last 20 Entries";
       h1.setAttribute("class", "entriesHeader" );}
     else if (rout == "/api/getLast20Entries"){
       text = "Last 20 entries";
@@ -92,12 +92,12 @@ $(document).ready(function() {
     var row = thead.insertRow(0);
     var cell;
     for (i = 0; i < col.length; i++) {
-      //debugger;
       cell = row.insertCell(-1);
       cell.innerHTML = col[i];
     }
 
     var tBody = document.createElement("tbody");
+    //Add class to tables
     if (rout == "/api/entries"){
       table.classList.add('entriesTable');
       table.appendChild(tBody);
@@ -115,9 +115,6 @@ $(document).ready(function() {
       table.appendChild(tBody);
     }
     
-
-    //debugger;
-
     var wedData = entries.data;
    
     for (var j = 0; j < wedData.length; j++) {
@@ -131,13 +128,7 @@ $(document).ready(function() {
           cell.setAttribute("class", "entryTitle" );
         }
       }
-      
-  
-        // cellShowComments = row.insertCell(-1);
-        // cellShowComments.innerHTML = 
-        // "<form action='/show-comment.php'> <input type='hidden' id='entryId' name='entryId' value='"+wedData[j].entryID+"'><input type='submit' value='Visa kommentarer'></form>"
-  
-
+      //Creating cells
         if(wedData[j].entryID && !wedData[j].commentID){
 
           cellCreateComment = row.insertCell(-1);
@@ -149,7 +140,6 @@ $(document).ready(function() {
           cellCreateComment.innerHTML = 
           "<a class=mdc-button href='/update-entry/"+wedData[j].entryID+"'>Update entry</a>"
 
-          // <i class="material-icons">delete_forever</i>
           cellDelete = row.insertCell(-1);
           cellDelete.innerHTML = '<i class="material-icons">delete</i>';
           cellDelete.setAttribute("IdToDelete", wedData[j].entryID );
@@ -165,29 +155,15 @@ $(document).ready(function() {
           cellDelete.onclick = function() { deleteComment(this.getAttribute("idtodelete"));};
         }
 
-        // cellDelete.onclick = function() { deleteObject(wedData[j].entryID);};
-        // myDiv.onclick = function () { alert(this.innerHTML); };
-
-      
-
-      
-      // if(wedData[j].entryID){
-      //   cellDelete.onclick = function() { deleteObject('entryID', wedData[j].entryId)};
-      // }
-      // else{
-      //   cellDelete.onclick = function() { deleteObject('userID', wedData[j].userId)};
-      // }
     }
 
-    //debugger;
     myContainer.appendChild(table);
 
   };
-  // Global
   main();
 
 });
-
+//Adding a user
 function addUser() {
   var username = document.getElementById("username").value;
   var password = document.getElementById("password").value;
@@ -204,18 +180,15 @@ function addUser() {
       // MUCH IMPORTANCE!
       credentials: 'include'
     }
-    //debugger;
     fetch('api/addUser', postOptions)
       .then(res => res.json())
       .then(window.location = "/");
 
 }
-
+//Adding a entry
 function addEntry(){
   var title = document.getElementById("title").value;
   var content = document.getElementById("comment").value;
-
-  var time = new Date();
 
   // x-www-form-urlencoded
     const formData = new FormData();
@@ -231,25 +204,12 @@ function addEntry(){
       credentials: 'include'
     }
 
-    let data = {
-        'title': title,
-        'content':content,
-        'createdBy': 1
-    }
-    // The parameters we are gonna pass to the fetch function
-    /*let fetchData = {
-        method: 'POST',
-        body: data,
-        headers: new Headers()
-    }*/
-
-    //debugger;
     fetch(' api/addEntry', postOptions  )
       .then(res => res.text())
       .then(window.location = "/");
 
   }
-
+//Deleting entry
   function deleteEntry(entryToDelete){
     const formData = new FormData();
     formData.append('entryId', entryToDelete );
@@ -267,20 +227,20 @@ function addEntry(){
     .then(res => res.text())
     .then(location.reload());
   }
-
+//Search title
   function search(){
     var searchValue = document.getElementById('searchValue').value;
     var elements = document.getElementsByClassName('entryTitle');
 
-    var elementsToHide = document.getElementsByClassName('displayNone');
-
+    //Row to show
     var tr = collectionContains(elements, searchValue);
     
-    hideElements(elementsToHide);
+    hideElements();
     createSearchTable(tr);
 
   }
 
+  //Get row that includes the entry-title from search
   function collectionContains(collection, searchText) {
     for (var i = 0; i < collection.length; i++) {
         if(collection[i].innerText.includes(searchText)) {
@@ -290,6 +250,7 @@ function addEntry(){
     return false;
 }
 
+//Create new table with result
 function createSearchTable(tr){
   var myContainer = document.getElementById("myContainer");
 
@@ -354,14 +315,11 @@ function createSearchTable(tr){
   myContainer.appendChild(table);
 
 }
-
-function hideElements(collection){
+//Hiding other tables
+function hideElements(){
   var entriesTable = document.getElementsByClassName('entriesTable');
   var entriesHeader = document.getElementsByClassName('entriesHeader');
 
-
-  var lastEntriesTable = document.getElementsByClassName('lastEntriesTable');
-  var lastEntriesHeader = document.getElementsByClassName('lastEntriesHeader');
 
   var userTable = document.getElementsByClassName('usersTable');
   var usersHeader = document.getElementsByClassName('usersHeader');
@@ -371,19 +329,16 @@ function hideElements(collection){
   var commentsHeader = document.getElementsByClassName('commentsHeader');
 
   entriesTable[0].setAttribute("class", "hide" );
-  lastEntriesTable[0].setAttribute("class", "hide" );
   userTable[0].setAttribute("class", "hide" );
   commentsTable[0].setAttribute("class", "hide" );
 
   entriesHeader[0].setAttribute("class", "hide" );
-  lastEntriesHeader[0].setAttribute("class", "hide" );
   usersHeader[0].setAttribute("class", "hide" );
   commentsHeader[0].setAttribute("class", "hide" );
 
 }
 
-
-
+//Deleting comment
   function deleteComment(commentToDelete){
     const formData = new FormData();
     formData.append('entryId', commentToDelete );

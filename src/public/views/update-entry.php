@@ -9,12 +9,13 @@
     <section class="section-wrapper">
       <h1>Update post</h1>
       <div class="form-group">
-        <input type="text" id="title" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="article" placeholder="Article name">
-        <textarea name="post" id="content" rows="8" cols="120" placeholder="Your post should not be more tha 10000 characters! Remember!"></textarea>
-        <br/>
-        <button onclick="updateEntry()" class="btn btn-primary" value="Post">Post </button>
-
-
+        <div class="mdc-text-field mdc-text-field--fullwidth">
+          <input type="text" id="title" class="mdc-text-field__input" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="article" placeholder="Entry title">
+        </div>
+        <div class="mdc-text-field mdc-text-field--textarea" style="margin-top: 25px;">
+          <textarea class="mdc-text-field__input" name="post" id="content" rows="8" cols="120" placeholder="Your post should not be more tha 10000 characters! Remember!"></textarea>
+        </div>
+        <button onclick="updateEntry()" class="btn btn-primary" value="Post">Update </button>
       </div>
     </section>
 
